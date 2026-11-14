@@ -6,6 +6,7 @@ use serde_json::{Map, Value};
 pub mod account;
 pub mod downloader;
 mod http_client;
+pub mod oxira_errores;
 pub mod record_upload;
 pub mod sync;
 pub use http_client::{
