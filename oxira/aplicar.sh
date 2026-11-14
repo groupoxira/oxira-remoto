@@ -12,6 +12,10 @@ sed -i "s|pub const RS_PUB_KEY: &str = \".*\";|pub const RS_PUB_KEY: \&str = \"$
 sed -i "s|RwLock::new(\"RustDesk\".to_owned())|RwLock::new(\"$NOMBRE\".to_owned())|" $c
 grep -q "\"$SERVIDOR\"" $c && grep -q "$LLAVE" $c && grep -q "\"$NOMBRE\"" $c || { echo "FALLO parche config.rs"; exit 1; }
 
+# Seguridad por defecto: sin clave fija, el que recibe acepta a mano; con clave fija, entra directo.
+sed -i 's|pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();|pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("verification-method".to_owned(), "use-permanent-password".to_owned())]));|' $c
+grep -q '"verification-method".to_owned(), "use-permanent-password"' $c || { echo "FALLO parche clave por defecto"; exit 1; }
+
 # API propia: registro de cada PC (heartbeat/sysinfo) y aviso de versiones nuevas
 API="https://$SERVIDOR"
 sed -i "s|    \"https://admin.rustdesk.com\".to_owned()|    \"$API\".to_owned()|" src/common.rs
