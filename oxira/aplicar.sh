@@ -40,5 +40,15 @@ cp $M/256.png res/128x128@2x.png
 cp $M/icon.svg res/icon.svg 2>/dev/null || true
 cp $M/icon.svg flutter/assets/icon.svg
 for f in flutter/assets/icon.png flutter/assets/logo.png; do [ -f "$f" ] && cp $M/512.png "$f"; done
+# Enlaces del programa a nuestra web (términos, precio, descarga, «acerca de»)
+W="https://$SERVIDOR"
+find flutter/lib -name '*.dart' -print0 | xargs -0 sed -i \
+  -e "s|https://rustdesk.com/privacy.html|$W/terminos|g" \
+  -e "s|https://rustdesk.com/pricing|$W/pro|g" \
+  -e "s|https://rustdesk.com/download|$W/|g" \
+  -e "s|'https://rustdesk.com/\\?'|'$W/'|g" \
+  -e "s|Text('rustdesk.com'|Text('$SERVIDOR'|g"
+! grep -rqE "rustdesk.com/(privacy|pricing|download)|'https://rustdesk.com/?'" flutter/lib || { echo "FALLO enlaces"; exit 1; }
+
 python3 oxira/parche_instalador.py
 echo "OXIRA: parche aplicado ($NOMBRE -> $SERVIDOR)"
