@@ -12,6 +12,12 @@ sed -i "s|pub const RS_PUB_KEY: &str = \".*\";|pub const RS_PUB_KEY: \&str = \"$
 sed -i "s|RwLock::new(\"RustDesk\".to_owned())|RwLock::new(\"$NOMBRE\".to_owned())|" $c
 grep -q "\"$SERVIDOR\"" $c && grep -q "$LLAVE" $c && grep -q "\"$NOMBRE\"" $c || { echo "FALLO parche config.rs"; exit 1; }
 
+# API propia: registro de cada PC (heartbeat/sysinfo) y aviso de versiones nuevas
+API="https://$SERVIDOR"
+sed -i "s|    \"https://admin.rustdesk.com\".to_owned()|    \"$API\".to_owned()|" src/common.rs
+sed -i "s|const URL: \&str = \"https://api.rustdesk.com/version/latest\";|const URL: \&str = \"$API/version/latest\";|" libs/hbb_common/src/lib.rs
+grep -q "\"$API\".to_owned()" src/common.rs && grep -q "$API/version/latest" libs/hbb_common/src/lib.rs || { echo "FALLO parche API"; exit 1; }
+
 # Textos de Windows
 r=flutter/windows/runner/Runner.rc
 sed -i 's|"Purslane Tech Pte. Ltd."|"OXIRA S.A.C."|; s|"RustDesk Remote Desktop"|"OXIRA Remoto"|; s|"ProductName", "RustDesk"|"ProductName", "OXIRA Remoto"|; s|Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved.|OXIRA S.A.C. Basado en software AGPL-3.0.|' $r
