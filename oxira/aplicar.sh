@@ -40,4 +40,5 @@ cp $M/256.png res/128x128@2x.png
 cp $M/icon.svg res/icon.svg 2>/dev/null || true
 cp $M/icon.svg flutter/assets/icon.svg
 for f in flutter/assets/icon.png flutter/assets/logo.png; do [ -f "$f" ] && cp $M/512.png "$f"; done
+python3 oxira/parche_instalador.py
 echo "OXIRA: parche aplicado ($NOMBRE -> $SERVIDOR)"
