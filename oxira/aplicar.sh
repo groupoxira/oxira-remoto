@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# OXIRA Remoto: marca, servidor y llave sobre el código base. Se corre desde la raíz del repo.
+# OXIVIEW Remote: marca, servidor y llave sobre el código base. Se corre desde la raíz del repo.
 set -euo pipefail
 SERVIDOR="remote.oxira.net.pe"
 LLAVE="WeGa86SknBPYnn8Tqj24bNsQXoV7Lx2e5qv+7jmfXTo="
-NOMBRE="OxiraRemoto"
+NOMBRE="OxiView"
 M=oxira/marca
 
 c=libs/hbb_common/src/config.rs
@@ -20,9 +20,9 @@ grep -q "\"$API\".to_owned()" src/common.rs && grep -q "$API/version/latest" lib
 
 # Textos de Windows
 r=flutter/windows/runner/Runner.rc
-sed -i 's|"Purslane Tech Pte. Ltd."|"OXIRA S.A.C."|; s|"RustDesk Remote Desktop"|"OXIRA Remoto"|; s|"ProductName", "RustDesk"|"ProductName", "OXIRA Remoto"|; s|Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved.|OXIRA S.A.C. Basado en software AGPL-3.0.|' $r
+sed -i 's|"Purslane Tech Pte. Ltd."|"OXIRA S.A.C."|; s|"RustDesk Remote Desktop"|"OXIVIEW Remote"|; s|"ProductName", "RustDesk"|"ProductName", "OXIVIEW Remote"|; s|Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved.|OXIRA S.A.C. Basado en software AGPL-3.0.|' $r
 sed -i 's|std::wstring app_name = L"RustDesk";|std::wstring app_name = L"'$NOMBRE'";|' flutter/windows/runner/main.cpp
-sed -i 's|^ProductName = "RustDesk"|ProductName = "OXIRA Remoto"|; s|^FileDescription = "RustDesk Remote Desktop"|FileDescription = "OXIRA Remoto"|; s|^LegalCopyright = .*|LegalCopyright = "OXIRA S.A.C. Basado en software AGPL-3.0."|' Cargo.toml
+sed -i 's|^ProductName = "RustDesk"|ProductName = "OXIVIEW Remote"|; s|^FileDescription = "RustDesk Remote Desktop"|FileDescription = "OXIVIEW Remote"|; s|^LegalCopyright = .*|LegalCopyright = "OXIRA S.A.C. Basado en software AGPL-3.0."|' Cargo.toml
 
 # Íconos
 cp $M/icon.ico res/icon.ico
