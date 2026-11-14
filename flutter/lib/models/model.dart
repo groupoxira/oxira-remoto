@@ -39,6 +39,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:vector_math/vector_math.dart' show Vector2;
 
 import '../common.dart';
+import '../common/widgets/oxira_compartir.dart';
 import '../utils/image.dart' as img;
 import '../common/widgets/dialog.dart';
 import 'input_model.dart';
@@ -531,9 +532,16 @@ class FfiModel with ChangeNotifier {
         close();
       }
 
+      shareFoto() {
+        bind.sessionHandleScreenshot(sessionId: sessionId, action: '1');
+        close();
+        oxiraCompartirFoto();
+      }
+
       final List<Widget> buttons = [
         dialogButton('${translate('Save as')}...', onPressed: saveAs),
         dialogButton('Copy to clipboard', onPressed: copyToClipboard),
+        dialogButton('Compartir', onPressed: shareFoto),
         dialogButton('Cancel', onPressed: cancel),
       ];
       dialogManager.dismissAll();
