@@ -13,8 +13,15 @@ sed -i "s|RwLock::new(\"RustDesk\".to_owned())|RwLock::new(\"$NOMBRE\".to_owned(
 grep -q "\"$SERVIDOR\"" $c && grep -q "$LLAVE" $c && grep -q "\"$NOMBRE\"" $c || { echo "FALLO parche config.rs"; exit 1; }
 
 # Seguridad por defecto: sin clave fija, el que recibe acepta a mano; con clave fija, entra directo.
-sed -i 's|pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();|pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("verification-method".to_owned(), "use-permanent-password".to_owned())]));|' $c
-grep -q '"verification-method".to_owned(), "use-permanent-password"' $c || { echo "FALLO parche clave por defecto"; exit 1; }
+sed -i 's|pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();|pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(HashMap::from([("verification-method".to_owned(), "use-both-passwords".to_owned())]));|' $c
+grep -q '"verification-method".to_owned(), "use-both-passwords"' $c || { echo "FALLO parche clave por defecto"; exit 1; }
+
+# OXIVIEW: el servidor va dentro del programa, nunca es «servidor público» (quita «configure su propio servidor» y el tope de calidad)
+sed -i 's|    crate::get_custom_rendezvous_server(get_option("custom-rendezvous-server")).is_empty()|    false // OXIVIEW: servidor propio incorporado|' src/common.rs
+grep -q 'false // OXIVIEW: servidor propio incorporado' src/common.rs || { echo "FALLO parche servidor público"; exit 1; }
+# OXIVIEW: sin «Con tecnología de RustDesk»
+sed -i 's|  if (bind.mainGetBuildinOption(key: "hide-powered-by-me") == .Y.) {|  if (true) { // OXIVIEW: sin «powered by»|' flutter/lib/common.dart
+grep -q 'if (true) { // OXIVIEW: sin «powered by»' flutter/lib/common.dart || { echo "FALLO parche powered by"; exit 1; }
 
 # API propia: registro de cada PC (heartbeat/sysinfo) y aviso de versiones nuevas
 API="https://$SERVIDOR"
