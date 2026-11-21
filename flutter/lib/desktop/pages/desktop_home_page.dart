@@ -430,6 +430,16 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   }
 
   Widget buildHelpCards(String updateUrl) {
+    // OXIVIEW: versión nueva -> «Actualizar» baja el instalador de nuestra web (sin el actualizador firmado de RustDesk)
+    if (updateUrl.isNotEmpty && !isCardClosed) {
+      return buildInstallCard(
+          "Status",
+          "${translate("new-version-of-{${bind.mainGetAppNameSync()}}-tip")} (${bind.mainGetNewVersion()}).",
+          'Update', () async {
+        await launchUrl(Uri.parse('$kOxiraWeb/bajar'),
+            mode: LaunchMode.externalApplication);
+      }, closeButton: true);
+    }
     if (!bind.isCustomClient() &&
         updateUrl.isNotEmpty &&
         !isCardClosed &&
